@@ -261,14 +261,14 @@ class PatchMerging(tf.keras.layers.Layer):
         assert L == H * W, "input feature has wrong size"
         assert H % 2 == 0 and W % 2 == 0, f"x size ({H}*{W}) are not even."
 
-        x = tf.reshape(x, shape=[B, H, W, C])
+        x = tf.reshape(x, shape=[-1, H, W, C])
 
         x0 = x[:, 0::2, 0::2, :]  # B H/2 W/2 C
         x1 = x[:, 1::2, 0::2, :]  # B H/2 W/2 C
         x2 = x[:, 0::2, 1::2, :]  # B H/2 W/2 C
         x3 = x[:, 1::2, 1::2, :]  # B H/2 W/2 C
         x = tf.concat([x0, x1, x2, x3], axis=-1)
-        x = tf.reshape(x, shape=[B, (H // 2) * (W // 2), 4 * C])
+        x = tf.reshape(x, shape=[-1, (H // 2) * (W // 2), 4 * C])
 
         x = self.norm(x)
         x = self.reduction(x)
