@@ -279,8 +279,8 @@ class PatchMerging(tf.keras.layers.Layer):
 class BasicLayer(tf.keras.layers.Layer):
     def __init__(self, dim, input_resolution, depth, num_heads, window_size,
                  mlp_ratio=4., qkv_bias=True, qk_scale=None, drop=0., attn_drop=0.,
-                 drop_path_prob=0., norm_layer=LayerNormalization, downsample=None, use_checkpoint=False, prefix=''):
-        super().__init__()
+                 drop_path_prob=0., norm_layer=LayerNormalization, downsample=None, use_checkpoint=False, prefix='',name='basic_layer'):
+        super().__init__(name=name)
         self.dim = dim
         self.input_resolution = input_resolution
         self.depth = depth
