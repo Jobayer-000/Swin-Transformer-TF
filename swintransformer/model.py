@@ -414,8 +414,8 @@ class SwinTransformerModel(tf.keras.Model):
             x = x + self.absolute_pos_embed
         x = self.pos_drop(x)
 
-        for x in self.basic_layers(x):
-            x = self.basic_layers(x)
+        for layer in self.basic_layers):
+            x = layer(x)
         x = self.norm(x)
         x = self.avgpool(x)
         return x
