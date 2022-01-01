@@ -427,12 +427,13 @@ class SwinTransformerModel(tf.keras.Model):
         return x
 
 
-def SwinTransformer(model_name='swin_tiny_224', num_classes=1000, include_top=True, pretrained=True, use_tpu=False, cfgs=CFGS):
+def SwinTransformer(model_name='swin_tiny_224', num_classes=1000, include_top=True, pretrained=True, use_tpu=False,shape, cfgs=CFGS):
     cfg = cfgs[model_name]
     net = SwinTransformerModel(
         model_name=model_name, include_top=include_top, num_classes=num_classes, img_size=cfg['input_size'], window_size=cfg[
             'window_size'], embed_dim=cfg['embed_dim'], depths=cfg['depths'], num_heads=cfg['num_heads']
     )
+    net.build((Batch_size, cfg['input_size'][0], cfg['input_size'][1], 3))
     net(tf.keras.Input(shape=(cfg['input_size'][0], cfg['input_size'][1], 3)))
     if pretrained is True:
         url = f'https://github.com/rishigami/Swin-Transformer-TF/releases/download/v0.1-tf-swin-weights/{model_name}.tgz'
