@@ -400,7 +400,8 @@ class SwinTransformerModel(tf.keras.Model):
                                                 downsample=PatchMerging if (
                                                     i_layer < self.num_layers - 1) else None,
                                                 use_checkpoint=use_checkpoint,
-                                                prefix=f'layers{i_layer}'), name=f'basic_layer_{i_layer}') for i_layer in range(self.num_layers)]
+                                                prefix=f'layers{i_layer}', 
+                                                name=f'basic_layer_{i_layer}') for i_layer in range(self.num_layers)]
         self.norm = norm_layer(epsilon=1e-5, name='norm')
         self.avgpool = GlobalAveragePooling1D()
         if self.include_top:
