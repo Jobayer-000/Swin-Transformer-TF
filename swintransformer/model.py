@@ -279,8 +279,8 @@ class PatchMerging(tf.keras.layers.Layer):
 class BasicLayer(tf.keras.layers.Layer):
     def __init__(self, dim, input_resolution, depth, num_heads, window_size,
                  mlp_ratio=4., qkv_bias=True, qk_scale=None, drop=0., attn_drop=0.,
-                 drop_path_prob=0., norm_layer=LayerNormalization, downsample=None, use_checkpoint=False, prefix=''):
-        super().__init__()
+                 drop_path_prob=0., norm_layer=LayerNormalization, downsample=None, use_checkpoint=False, prefix='',name='basic_layer'):
+        super().__init__(name=name)
         self.dim = dim
         self.input_resolution = input_resolution
         self.depth = depth
@@ -385,7 +385,7 @@ class SwinTransformerModel(tf.keras.Model):
         dpr = [x for x in np.linspace(0., drop_path_rate, sum(depths))]
 
         # build layers
-        self.basic_layers = [tf.keras.Sequential([BasicLayer(dim=int(embed_dim * 2 ** i_layer),
+        self.basic_layers = [BasicLayer(dim=int(embed_dim * 2 ** i_layer),
                                                 input_resolution=(patches_resolution[0] // (2 ** i_layer),
                                                                   patches_resolution[1] // (2 ** i_layer)),
                                                 depth=depths[i_layer],
@@ -400,7 +400,7 @@ class SwinTransformerModel(tf.keras.Model):
                                                 downsample=PatchMerging if (
                                                     i_layer < self.num_layers - 1) else None,
                                                 use_checkpoint=use_checkpoint,
-                                                prefix=f'layers{i_layer}')], name=f'basic_layer_{i_layer}') for i_layer in range(self.num_layers)]
+                                                prefix=f'layers{i_layer}'), name=f'basic_layer_{i_layer}') for i_layer in range(self.num_layers)]
         self.norm = norm_layer(epsilon=1e-5, name='norm')
         self.avgpool = GlobalAveragePooling1D()
         if self.include_top:
