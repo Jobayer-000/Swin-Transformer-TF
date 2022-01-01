@@ -427,7 +427,7 @@ class SwinTransformerModel(tf.keras.Model):
         return x
 
 
-def SwinTransformer(model_name='swin_tiny_224', num_classes=1000, include_top=True, pretrained=True, use_tpu=False, batch, cfgs=CFGS):
+def SwinTransformer(model_name='swin_tiny_224', num_classes=1000, include_top=True, pretrained=True, use_tpu=False, batch=1, cfgs=CFGS):
     cfg = cfgs[model_name]
     net = SwinTransformerModel(
         model_name=model_name, include_top=include_top, num_classes=num_classes, img_size=cfg['input_size'], window_size=cfg[
