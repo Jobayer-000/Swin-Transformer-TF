@@ -313,8 +313,8 @@ class BasicLayer(tf.keras.layers.Layer):
 
 
 class PatchEmbed(tf.keras.layers.Layer):
-    def __init__(self, img_size=(224, 224), patch_size=(4, 4), in_chans=3, embed_dim=96, norm_layer=None, name='patch_embed'):
-        super().__init__(name=name)
+    def __init__(self, img_size=(224, 224), patch_size=(4, 4), in_chans=3, embed_dim=96, norm_layer=None):
+        super().__init__()
         patches_resolution = [img_size[0] //
                               patch_size[0], img_size[1] // patch_size[1]]
         self.img_size = img_size
@@ -400,7 +400,7 @@ class SwinTransformerModel(tf.keras.Model):
                                                 downsample=PatchMerging if (
                                                     i_layer < self.num_layers - 1) else None,
                                                 use_checkpoint=use_checkpoint,
-                                                prefix=f'layers{i_layer}', name=f'basic_layer_{i_layer}')]) for i_layer in range(self.num_layers)]
+                                                prefix=f'layers{i_layer}')], , name=f'basic_layer_{i_layer}') for i_layer in range(self.num_layers)]
         self.norm = norm_layer(epsilon=1e-5, name='norm')
         self.avgpool = GlobalAveragePooling1D()
         if self.include_top:
