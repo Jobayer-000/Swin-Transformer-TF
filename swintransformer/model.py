@@ -206,12 +206,10 @@ class SwinTransformerBlock(tf.keras.layers.Layer):
         H, W = self.input_resolution
         B, L, C = x.get_shape().as_list()
         assert L == H * W, "input feature has wrong size"
-        print(x.get_shape().as_list())
 
         shortcut = x
         x = self.norm1(x)
         x = tf.reshape(x, shape=[B, H, W, C])
-        print(1)
 
         # cyclic shift
         if self.shift_size > 0:
@@ -240,12 +238,10 @@ class SwinTransformerBlock(tf.keras.layers.Layer):
         else:
             x = shifted_x
         x = tf.reshape(x, shape=[B, H * W, C])
-        print(2)
 
         # FFN
         x = shortcut + self.drop_path(x)
         x = x + self.drop_path(self.mlp(self.norm2(x)))
-        print(3)
 
         return x
 
@@ -309,10 +305,13 @@ class BasicLayer(tf.keras.layers.Layer):
             self.downsample = None
 
     def call(self, x):
+        print(x.shape)
         x = self.blocks(x)
+        print(x.shape)
 
         if self.downsample is not None:
             x = self.downsample(x)
+        print(x.shape)
         return x
 
 
