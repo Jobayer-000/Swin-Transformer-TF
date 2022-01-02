@@ -305,13 +305,10 @@ class BasicLayer(tf.keras.layers.Layer):
             self.downsample = None
 
     def call(self, x):
-        print(x.shape)
         x = self.blocks(x)
-        print(x.shape)
 
         if self.downsample is not None:
             x = self.downsample(x)
-        print(x.shape)
         return x
 
 
