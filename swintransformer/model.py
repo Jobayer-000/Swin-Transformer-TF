@@ -204,7 +204,7 @@ class SwinTransformerBlock(tf.keras.layers.Layer):
 
     def call(self, x):
         H, W = self.input_resolution
-        B, L, C = x.shape
+        B, L, C = x.get_shape().as_list()
         assert L == H * W, "input feature has wrong size"
 
         shortcut = x
