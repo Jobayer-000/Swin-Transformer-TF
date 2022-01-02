@@ -245,6 +245,7 @@ class SwinTransformerBlock(tf.keras.layers.Layer):
         # FFN
         x = shortcut + self.drop_path(x)
         x = x + self.drop_path(self.mlp(self.norm2(x)))
+        print(3)
 
         return x
 
