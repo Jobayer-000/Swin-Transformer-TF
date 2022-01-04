@@ -31,7 +31,7 @@ class Mlp(tf.keras.layers.Layer):
 
 
 def window_partition(x, window_size):
-    B, H, W, C = x.shape
+    B, H, W, C = x.get_shape().as_list()
     x = tf.reshape(x, shape=[-1, H // window_size,
                    window_size, W // window_size, window_size, C])
     x = tf.transpose(x, perm=[0, 1, 3, 2, 4, 5])
@@ -85,7 +85,7 @@ class WindowAttention(tf.keras.layers.Layer):
         self.built = True
 
     def call(self, x, mask=None):
-        B_, N, C = x.shape
+        B_, N, C = x.get_shape().as_list()
         qkv = tf.transpose(tf.reshape(self.qkv(
             x), shape=[-1, N, 3, self.num_heads, C // self.num_heads]), perm=[2, 0, 3, 1, 4])
         q, k, v = qkv[0], qkv[1], qkv[2]
@@ -208,7 +208,7 @@ class SwinTransformerBlock(tf.keras.layers.Layer):
 
         shortcut = x
         x = self.norm1(x)
-        x = tf.reshape(x, shape=[B, H, W, C])
+        x = tf.reshape(x, shape=[-1, H, W, C])
 
         # cyclic shift
         if self.shift_size > 0:
