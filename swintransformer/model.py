@@ -32,7 +32,7 @@ class Mlp(tf.keras.layers.Layer):
 
 def window_partition(x, window_size):
     B, H, W, C = x.shape
-    x = tf.reshape(x, shape=[B, H // window_size,
+    x = tf.reshape(x, shape=[-1, H // window_size,
                    window_size, W // window_size, window_size, C])
     x = tf.transpose(x, perm=[0, 1, 3, 2, 4, 5])
     windows = tf.reshape(x, shape=[-1, window_size, window_size, C])
@@ -40,11 +40,10 @@ def window_partition(x, window_size):
 
 @tf.function
 def window_reverse(windows, window_size, H, W, C):
-    B = int(windows.shape[0] / (H * W / window_size / window_size))
-    x = tf.reshape(windows, shape=[B, H // window_size,
+    x = tf.reshape(windows, shape=[-1, H // window_size,
                    W // window_size, window_size, window_size, C])
     x = tf.transpose(x, perm=[0, 1, 3, 2, 4, 5])
-    x = tf.reshape(x, shape=[B, H, W, C])
+    x = tf.reshape(x, shape=[-1, H, W, C])
     return x
 
 
@@ -88,7 +87,7 @@ class WindowAttention(tf.keras.layers.Layer):
     def call(self, x, mask=None):
         B_, N, C = x.shape
         qkv = tf.transpose(tf.reshape(self.qkv(
-            x), shape=[B_, N, 3, self.num_heads, C // self.num_heads]), perm=[2, 0, 3, 1, 4])
+            x), shape=[-1, N, 3, self.num_heads, C // self.num_heads]), perm=[2, 0, 3, 1, 4])
         q, k, v = qkv[0], qkv[1], qkv[2]
 
         q = q * self.scale
@@ -103,7 +102,7 @@ class WindowAttention(tf.keras.layers.Layer):
 
         if mask is not None:
             nW = mask.get_shape()[0]  # tf.shape(mask)[0]
-            attn = tf.reshape(attn, shape=[B_ // nW, nW, self.num_heads, N, N]) + tf.cast(
+            attn = tf.reshape(attn, shape=[-1, nW, self.num_heads, N, N]) + tf.cast(
                 tf.expand_dims(tf.expand_dims(mask, axis=1), axis=0), tf.float16)
             attn = tf.reshape(attn, shape=[-1, self.num_heads, N, N])
             attn = tf.nn.softmax(attn, axis=-1)
@@ -113,7 +112,7 @@ class WindowAttention(tf.keras.layers.Layer):
         attn = self.attn_drop(attn)
 
         x = tf.transpose((attn @ v), perm=[0, 2, 1, 3])
-        x = tf.reshape(x, shape=[B_, N, C])
+        x = tf.reshape(x, shape=[-1, N, C])
         x = self.proj(x)
         x = self.proj_drop(x)
         return x
@@ -237,7 +236,7 @@ class SwinTransformerBlock(tf.keras.layers.Layer):
                         self.shift_size, self.shift_size], axis=[1, 2])
         else:
             x = shifted_x
-        x = tf.reshape(x, shape=[B, H * W, C])
+        x = tf.reshape(x, shape=[-1, H * W, C])
 
         # FFN
         x = shortcut + self.drop_path(x)
