@@ -2,7 +2,7 @@ import numpy as np
 import tensorflow as tf
 from tensorflow.keras.layers import Dropout, Conv2D, LayerNormalization, GlobalAveragePooling1D
 import tensorflow_addons as tfa 
-class Dense(keras.layers.Dense):
+class Dense(tf.keras.layers.Dense):
     def __init__(self, units, use_bias=True, initializer = tf.keras.initializers.TruncatedNormal(mean=0., stddev=.02)):
         super().__init__(units, use_bias=use_bias, kernel_initializer=initializer)
 CFGS = {
