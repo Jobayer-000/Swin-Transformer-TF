@@ -407,7 +407,7 @@ class SwinTransformerModel(tf.keras.Model):
         self.norm = norm_layer(epsilon=1e-5, name='norm')
         self.avgpool = tfa.layers.AdaptiveAveragePooling1D(1)
         if self.include_top:
-            self.head = Dense(num_classes, name='head')
+            self.head = Dense(num_classes, dtype=tf.float16, name='head')
         else:
             self.head = None
 
