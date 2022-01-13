@@ -1,7 +1,10 @@
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras.layers import Dense, Dropout, Conv2D, LayerNormalization, GlobalAveragePooling1D
-
+from tensorflow.keras.layers import Dropout, Conv2D, LayerNormalization, GlobalAveragePooling1D
+import tensorflow_addons as tfa 
+class Dense(keras.layers.Dense):
+    def __init__(self, units, use_bias=True, initializer = tf.keras.initializers.TruncatedNormal(mean=0., stddev=.02)):
+        super().__init__(units, use_bias=use_bias, kernel_initializer=initializer)
 CFGS = {
     'swin_tiny_224': dict(input_size=(224, 224), window_size=7, embed_dim=96, depths=[2, 2, 6, 2], num_heads=[3, 6, 12, 24]),
     'swin_small_224': dict(input_size=(224, 224), window_size=7, embed_dim=96, depths=[2, 2, 18, 2], num_heads=[3, 6, 12, 24]),
@@ -402,7 +405,7 @@ class SwinTransformerModel(tf.keras.Model):
                                                 prefix=f'layers{i_layer}', 
                                                 name=f'basic_layer_{i_layer}') for i_layer in range(self.num_layers)]
         self.norm = norm_layer(epsilon=1e-5, name='norm')
-        self.avgpool = GlobalAveragePooling1D()
+        self.avgpool = tfa.layers.AdaptiveAveragePooling1D(1)
         if self.include_top:
             self.head = Dense(num_classes, name='head')
         else:
